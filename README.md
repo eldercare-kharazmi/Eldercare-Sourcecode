@@ -1,2 +1,2 @@
 Elder-Care project
-created by Parsa Samadi & Mohyedin Palizdar
+made by Parsa Samadi & Mohyedin Palizdar
