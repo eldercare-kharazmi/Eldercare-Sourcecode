@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدیریت مصرف داروی سالمندان - سامانه هوشمند</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* استایل مخصوص آیکون پروفایل */
+        .profile-icon {
+            position: absolute;
+            top: 50%;
+            left: 30px;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 1.5rem;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.15);
+            padding: 8px 15px;
+            border-radius: 50px;
+            transition: 0.3s;
+        }
+        .profile-icon:hover {
+            background: rgba(255,255,255,0.25);
+        }
+        .profile-text { font-size: 1rem; }
+        .header { position: relative; }
+
+        /* استایل دکمه درباره (شناور) */
+        .about-fab {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: #f39c12; /* رنگ زرد */
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+            transition: all 0.3s;
+            z-index: 1000;
+            text-decoration: none;
+            gap: 10px;
+            font-weight: bold;
+            border: 3px solid #e67e22;
+        }
+        
+        .about-fab:hover {
+            background: #e67e22;
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(243, 156, 18, 0.6);
+        }
+        
+        @media (max-width: 768px) {
+            .about-fab {
+                bottom: 20px;
+                left: 20px;
+                padding: 12px 20px;
+            }
+            .fab-text { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                <h1>مدیریت مصرف داروی سالمندان</h1>
+            </div>
+            <p class="subtitle">سامانه هوشمند - امنیت بالا</p>
+
+            <!-- آیکون پروفایل (فقط اگر لاگین باشد) -->
+            {% if user %}
+            <a href="{{ url_for('elder_dashboard' if user.type == 'elder' else 'family_dashboard') }}" class="profile-icon">
+                <span class="profile-text">{{ user.fullname }}</span>
+                <i class="fas fa-user-circle"></i>
+            </a>
+            {% endif %}
+        </header>
+
+        <main class="main-content">
+            <div class="welcome-section">
+                <h2>به سامانه مدیریت مصرف داروی سالمندان خوش آمدید</h2>
+                <p>سامانه ای امن و کارآمد برای مدیریت مصرف داروهای سالمندان عزیز</p>
+                
+                <div class="features">
+                    <div class="feature">
+                        <i class="fas fa-user-md"></i>
+                        <h3>مدیریت داروها</h3>
+                        <p>ثبت و مدیریت داروهای مصرفی</p>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-bell"></i>
+                        <h3>یادآوری هوشمند</h3>
+                        <p>یادآوری زمان مصرف داروها</p>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-family"></i>
+                        <h3>نظارت خانوادگی</h3>
+                        <p>امکان نظارت خانواده بر مصرف دارو</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="selection-section">
+                <h2>لطفاً نوع کاربری خود را انتخاب کنید</h2>
+                
+                <div class="user-type-cards">
+                    <!-- کارت سالمند -->
+                    {% if user and user.type == 'elder' %}
+                        <a href="{{ url_for('elder_dashboard') }}" class="user-card elder">
+                    {% elif user and user.type == 'family' %}
+                        <a href="#" onclick="alert('شما با اکانت خانواده وارد شده‌اید')" class="user-card elder" style="opacity: 0.5">
+                    {% else %}
+                        <a href="{{ url_for('login_page', type='elder') }}" class="user-card elder">
+                    {% endif %}
+                        <div class="card-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3>سالمند</h3>
+                        <p>من سالمند هستم و می‌خواهم داروهایم را مدیریت کنم</p>
+                        <ul class="card-features">
+                            <li><i class="fas fa-check"></i> دریافت کد اختصاصی</li>
+                            <li><i class="fas fa-check"></i> ثبت داروهای مصرفی</li>
+                            <li><i class="fas fa-check"></i> اتصال به خانواده</li>
+                        </ul>
+                    </a>
+                    
+                    <!-- کارت خانواده -->
+                    {% if user and user.type == 'family' %}
+                        <a href="{{ url_for('family_dashboard') }}" class="user-card family">
+                    {% elif user and user.type == 'elder' %}
+                        <a href="#" onclick="alert('شما با اکانت سالمند وارد شده‌اید')" class="user-card family" style="opacity: 0.5">
+                    {% else %}
+                        <a href="{{ url_for('login_page', type='family') }}" class="user-card family">
+                    {% endif %}
+                        <div class="card-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>عضو خانواده</h3>
+                        <p>من می‌خواهم بر مصرف داروی سالمندم نظارت کنم</p>
+                        <ul class="card-features">
+                            <li><i class="fas fa-check"></i> مشاهده داروهای سالمند</li>
+                            <li><i class="fas fa-check"></i> اطلاع از وضعیت مصرف</li>
+                            <li><i class="fas fa-check"></i> ارتباط امن با سالمند</li>
+                        </ul>
+                    </a>
+                </div>
+                
+                <div class="info-box">
+                    <i class="fas fa-info-circle"></i>
+                    <p>این سامانه با هدف افزایش ایمنی و سلامت سالمندان عزیز طراحی شده است.</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>پروژه خوارزمی - سامانه مدیریت داروی سالمندان - توسعه یافته با Flask و SQLite</p>
+            <p class="footer-note">کلیه حقوق محفوظ می‌باشد</p>
+        </footer>
+    </div>
+
+    <!-- دکمه درباره (فقط اینجا باشد) -->
+    <a href="{{ url_for('about') }}" class="about-fab" title="درباره ما">
+        <i class="fas fa-info-circle"></i>
+        <span class="fab-text">درباره</span>
+    </a>
+
+</body>
+</html>

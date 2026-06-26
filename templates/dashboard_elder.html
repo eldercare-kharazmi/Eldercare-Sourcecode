@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داشبورد سالمند</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Vazirmatn', sans-serif; }
+        body { background: #f5f7fa; }
+        .header { background: #2c3e50; color: white; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* دکمه خروج قرمز */
+        .logout-btn { 
+            color: white; text-decoration: none; padding: 8px 18px; 
+            border: 2px solid #e74c3c; border-radius: 10px; transition: 0.3s;
+            background: rgba(231, 76, 60, 0.1); font-weight: bold;
+        }
+        .logout-btn:hover { background: #e74c3c; }
+
+        .main-container { padding: 30px; max-width: 1200px; margin: 0 auto; }
+        .section-title { color: #2c3e50; margin-bottom: 20px; font-size: 1.4rem; border-right: 5px solid #3498db; padding-right: 15px; }
+        .medication-table { width: 100%; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 40px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 15px; text-align: right; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; font-weight: bold; color: #2c3e50; }
+        .status-pending { color: #f39c12; font-weight: bold; }
+        .status-taken { color: #2ecc71; font-weight: bold; }
+        .status-missed { color: #e74c3c; font-weight: bold; }
+        .btn-action { padding: 6px 12px; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; margin: 0 5px; color: white; }
+        .btn-taken { background: #2ecc71; }
+        .btn-missed { background: #e74c3c; }
+        .btn-primary { background: #3498db; color: white; border: none; padding: 12px 25px; border-radius: 5px; cursor: pointer; font-size: 16px; width: 100%; }
+        .add-medication-form, .family-management { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin-bottom: 30px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .form-control { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        .time-inputs-container { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+        .time-input-box { flex: 1; min-width: 120px; }
+
+        /* پیام هوشمند انتهای صفحه */
+        .smart-note {
+            background: #fff3cd; border: 1px solid #ffeeba; color: #856404;
+            padding: 20px; border-radius: 15px; margin-top: 30px; line-height: 1.8;
+            border-right: 6px solid #f39c12; font-size: 0.95rem;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <div class="user-info">
+            <h2>سلام {{ fullname }}</h2>
+            <p>کد شما: <strong id="elderCodeDisplay" style="color: #f1c40f;">...</strong></p>
+        </div>
+        <a href="{{ url_for('logout') }}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> خروج</a>
+    </div>
+    
+    <div class="main-container">
+        <h2 class="section-title">💊 داروهای امروز</h2>
+        <div class="medication-table">
+            <table>
+                <thead>
+                    <tr><th>نام دارو</th><th>ساعت</th><th>طرز استفاده</th><th>وضعیت</th><th>عملیات</th></tr>
+                </thead>
+                <tbody>
+                    {% for med in medications %}
+                    <tr>
+                        <td><strong>{{ med.drug_name }}</strong></td>
+                        <td>{{ med.usage_time }}</td>
+                        <td>{{ med.usage_method or '-' }}</td>
+                        <td>
+                            {% if med.status == 'pending' %} <span class="status-pending">در انتظار</span>
+                            {% elif med.status == 'taken' %} <span class="status-taken">مصرف شده</span>
+                            {% else %} <span class="status-missed">مصرف نشده</span> {% endif %}
+                        </td>
+                        <td>
+                            {% if med.status == 'pending' %}
+                            <button class="btn-action btn-taken" onclick="updateStatus({{ med.id }}, 'taken')">مصرف کردم</button>
+                            <button class="btn-action btn-missed" onclick="updateStatus({{ med.id }}, 'missed')">مصرف نکردم</button>
+                            {% else %} - {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="5" style="text-align:center; padding:30px;">دارویی برای امروز ثبت نشده است.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <h2 class="section-title">➕ افزودن دارو</h2>
+        <div class="add-medication-form">
+            <div class="form-row">
+                <div><label>نام دارو</label><input type="text" id="drugName" class="form-control"></div>
+                <div><label>مدت (تعداد روز)</label><input type="number" id="duration" class="form-control" value="30"></div>
+            </div>
+            <div style="background: #e3f2fd; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                <label>چند بار در روز؟</label>
+                <select id="frequency" class="form-control" onchange="generateTimeInputs()"><option value="1">۱ بار</option><option value="2">۲ بار</option><option value="3">۳ بار</option><option value="4">۴ بار</option></select>
+                <div id="timeInputs" class="time-inputs-container"></div>
+            </div>
+            <div class="form-group" style="margin-bottom: 20px;">
+                <label>طرز استفاده</label>
+                <input type="text" id="usageMethod" class="form-control" placeholder="مثلاً: بعد از غذا">
+            </div>
+            <button class="btn-primary" onclick="addMedication()">ثبت برنامه</button>
+        </div>
+
+        <h2 class="section-title">👨‍👩‍👧‍👦 وضعیت خانواده</h2>
+        <div class="family-management">
+            <div id="connectedFamilyInfo" style="margin-bottom: 15px;">...</div>
+            <button class="btn-action" style="background:#3498db" onclick="loadConnectedFamily()">بروزرسانی</button>
+            <button class="btn-action" style="background:#e67e22; display:none" id="disconnectBtn" onclick="disconnectFamily()">قطع ارتباط</button>
+        </div>
+
+        <div class="smart-note">
+            <i class="fas fa-info-circle"></i>
+            <strong>سالمند گرامی:</strong> در صورتی که بعد از گذشت زمان مصرف، وضعیت را به «مصرف کردم» تغییر ندهید، وضعیت به صورت خودکار به «مصرف نکردم» تغییر می‌کند و برای خانواده شما پیام ارسال می‌گردد.
+        </div>
+    </div>
+
+    <script>
+        function generateTimeInputs() {
+            const count = document.getElementById('frequency').value;
+            const container = document.getElementById('timeInputs');
+            container.innerHTML = ''; 
+            for(let i=0; i<count; i++) {
+                const input = document.createElement('input');
+                input.type = 'time'; input.className = 'form-control time-input-box'; input.required = true;
+                container.appendChild(input);
+            }
+        }
+        generateTimeInputs();
+
+        async function addMedication() {
+            const times = []; document.querySelectorAll('#timeInputs input').forEach(i => { if(i.value) times.push(i.value) });
+            if(!document.getElementById('drugName').value || times.length === 0) return alert('اطلاعات ناقص است');
+            const res = await fetch('/api/medication', { method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    drug_name: document.getElementById('drugName').value,
+                    duration: document.getElementById('duration').value,
+                    times: times,
+                    usage_method: document.getElementById('usageMethod').value
+                })
+            });
+            if((await res.json()).success) location.reload();
+        }
+
+        async function updateStatus(id, st) {
+            await fetch(`/api/medication/${id}/status`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({status: st}) });
+            location.reload();
+        }
+
+        async function loadConnectedFamily() {
+            const data = await (await fetch('/api/elder/connected-family')).json();
+            const info = document.getElementById('connectedFamilyInfo');
+            if (data.connected) {
+                info.innerHTML = `خانواده متصل: <b>${data.family_name}</b>`;
+                document.getElementById('disconnectBtn').style.display = 'inline-block';
+            } else {
+                info.innerHTML = 'هیچ خانواده‌ای متصل نیست.';
+                document.getElementById('disconnectBtn').style.display = 'none';
+            }
+        }
+
+        async function disconnectFamily() {
+            if (confirm('آیا مطمئن هستید که می‌خواهید ارتباط با خانواده را قطع کنید؟')) {
+                const res = await fetch('/api/elder/disconnect-family', { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    location.reload();
+                }
+            }
+        }
+
+        fetch('/api/elder/code').then(r => r.json()).then(d => document.getElementById('elderCodeDisplay').textContent = d.elder_code);
+        window.onload = loadConnectedFamily;
+    </script>
+</body>
+</html>

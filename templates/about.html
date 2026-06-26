@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>درباره ما - سامانه مدیریت داروی سالمندان</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+        }
+        
+        .about-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 25px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            color: #f39c12;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .content-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            border-right: 5px solid #3498db;
+        }
+        
+        .content-section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .content-section h2 i {
+            color: #3498db;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .feature-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            transition: all 0.3s;
+            border: 2px solid #e9ecef;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: #3498db;
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.15);
+        }
+        
+        .feature-card h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .feature-card i {
+            font-size: 2rem;
+            color: #2ecc71;
+            margin-bottom: 15px;
+        }
+        
+        .creator-section {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            border-radius: 15px;
+            padding: 35px;
+            margin-top: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .creator-section h2 {
+            color: #f39c12;
+            margin-bottom: 25px;
+            font-size: 2rem;
+            text-align: center;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .info-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .info-item h3 {
+            color: #f1c40f;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            border-bottom: 2px solid #f39c12;
+            padding-bottom: 8px;
+        }
+        
+        .info-item p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .contact-info {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .contact-info h3 {
+            color: #f1c40f;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        
+        .contact-item i {
+            font-size: 1.3rem;
+            color: #3498db;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            margin-top: 40px;
+            font-weight: bold;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+        
+        .back-btn:hover {
+            background: #c0392b;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        .btn-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        /* دکمه درباره در این صفحه هم */
+        .about-fab {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: #f39c12;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+            transition: all 0.3s;
+            z-index: 1000;
+            text-decoration: none;
+            gap: 10px;
+            font-weight: bold;
+            border: 3px solid #e67e22;
+        }
+        
+        .about-fab:hover {
+            background: #e67e22;
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(243, 156, 18, 0.6);
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .about-fab {
+                bottom: 20px;
+                left: 20px;
+                padding: 12px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- دکمه بازگشت به خانه -->
+    <a href="/" class="about-fab" title="بازگشت به صفحه اصلی">
+        <i class="fas fa-home"></i>
+        <span class="fab-text">صفحه اصلی</span>
+    </a>
+
+    <div class="about-container">
+        <!-- هدر صفحه -->
+        <div class="header">
+            <h1><i class="fas fa-heartbeat"></i> درباره سامانه مدیریت داروی سالمندان</h1>
+            <p>سیستمی امن، ساده و کاربردی برای مدیریت مصرف داروهای سالمندان عزیز</p>
+        </div>
+        
+        <!-- بخش مزایا -->
+        <div class="content-section">
+            <h2><i class="fas fa-star"></i> مزایای سامانه</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>امنیت بالا</h3>
+                    <p>استفاده از الگوریتم‌های پیشرفته رمزنگاری برای حفظ حریم خصوصی و امنیت اطلاعات کاربران</p>
+                </div>
+                
+                <div class="feature-card">
+                    <i class="fas fa-user-friends"></i>
+                    <h3>ارتباط خانوادگی</h3>
+                    <p>ایجاد پل ارتباطی امن بین سالمند و خانواده برای نظارت بهتر بر مصرف داروها</p>
+                </div>
+                
+                <div class="feature-card">
+                    <i class="fas fa-bell"></i>
+                    <h3>یادآوری هوشمند</h3>
+                    <p>سیستم یادآوری زمان مصرف داروها برای جلوگیری از فراموشی</p>
+                </div>
+                
+                <div class="feature-card">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h3>دسترسی آسان</h3>
+                    <p>رابط کاربری ساده و قابل استفاده در تمام دستگاه‌ها (موبایل، تبلت، کامپیوتر)</p>
+                </div>
+                
+                <div class="feature-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>گزارش‌گیری</h3>
+                    <p>امکان مشاهده گزارش مصرف داروها در بازه‌های زمانی مختلف</p>
+                </div>
+                
+                <div class="feature-card">
+                    <i class="fas fa-lock"></i>
+                    <h3>حریم خصوصی</h3>
+                    <p>حفظ کامل حریم خصوصی کاربران و اطلاعات شخصی آن‌ها</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- بخش کاربردها -->
+        <div class="content-section">
+            <h2><i class="fas fa-tasks"></i> کاربردهای سامانه</h2>
+            <ul style="margin-right: 30px; line-height: 2.5; font-size: 1.1rem;">
+                <li>✅ مدیریت داروهای مصرفی روزانه سالمندان</li>
+                <li>✅ یادآوری زمان مصرف هر دارو</li>
+                <li>✅ نظارت خانواده بر روند مصرف داروها</li>
+                <li>✅ ثبت اطلاعات پزشک و دستورات مصرف</li>
+                <li>✅ گزارش‌گیری از وضعیت مصرف داروها</li>
+                <li>✅ اتصال امن بین سالمند و اعضای خانواده</li>
+                <li>✅ ثبت عوارض جانبی داروها (در صورت وجود)</li>
+                <li>✅ مدیریت نسخه‌های متعدد پزشکی</li>
+            </ul>
+        </div>
+        
+        <!-- بخش امنیت -->
+        <div class="content-section">
+            <h2><i class="fas fa-lock"></i> امنیت سامانه</h2>
+            <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 20px;">
+                سامانه مدیریت داروی سالمندان با بالاترین استانداردهای امنیتی طراحی شده است:
+            </p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-key"></i>
+                    <h3>رمزنگاری پیشرفته</h3>
+                    <p>استفاده از الگوریتم SHA256 برای رمزنگاری رمزهای عبور</p>
+                </div>
+                
+                <div class="feature-card">
+                    <i class="fas fa-user-shield"></i>
+                    <h3>احراز هویت ایمن</h3>
+                    <p>سیستم احراز هویت دو مرحله‌ای و مدیریت نشست امن</p>
+                </div>
+                
+                <div class="feature-card">
+                    <i class="fas fa-database"></i>
+                    <h3>پایگاه داده امن</h3>
+                    <p>ذخیره‌سازی امن اطلاعات در پایگاه داده SQLite با دسترسی محدود</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- بخش اطلاعات سازنده -->
+        <div class="creator-section">
+            <h2><i class="fas fa-user-tie"></i> اطلاعات سازندگان</h2>
+            
+            <div class="info-grid">
+                <div class="info-item">
+                    <h3>نام سازندگان</h3>
+                    <p>پارسا صمدی و محی الدین پالیزدار</p>
+                </div>
+                
+                <div class="info-item">
+                    <h3>پایه تحصیلی</h3>
+                    <p>پایه نهم</p>
+                </div>
+                
+                <div class="info-item">
+                    <h3>مدرسه</h3>
+                    <p>دارالفنون شهریار</p>
+                </div>
+            </div>
+            
+            <div class="contact-info">
+                <h3><i class="fas fa-address-book"></i> راه‌های ارتباطی</h3>
+                
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <div>
+                        <strong>ایمیل:</strong>
+                        <p>samadyparsa9@gmail.com</p>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <div>
+                        <strong>تلفن تماس:</strong>
+                        <p>۰۹۳۶۶۲۹۰۷۹۷</p>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fas fa-graduation-cap"></i>
+                    <div>
+                        <strong>پروژه:</strong>
+                        <p>پروژه خوارزمی - سامانه مدیریت داروی سالمندان</p>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <i class="fas fa-code"></i>
+                    <div>
+                        <strong>تکنولوژی‌ها:</strong>
+                        <p>Python, Flask, SQLite, HTML, CSS, JavaScript</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <p style="font-style: italic; opacity: 0.9;">
+                    "این پروژه با هدف کمک به سلامت و ایمنی سالمندان عزیز طراحی و توسعه یافته است"
+                </p>
+            </div>
+        </div>
+        
+        <!-- دکمه بازگشت به صفحه اصلی -->
+        <div class="btn-container">
+            <a href="/" class="back-btn">
+                <i class="fas fa-arrow-right"></i> بازگشت به صفحه اصلی
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // اسکریپت برای hover effect
+        document.addEventListener('DOMContentLoaded', function() {
+            // hover effect برای کارت‌ها
+            document.querySelectorAll('.feature-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+            
+            // hover effect برای دکمه‌ها
+            const backBtn = document.querySelector('.back-btn');
+            if (backBtn) {
+                backBtn.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-3px)';
+                });
+                
+                backBtn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            }
+            
+            // hover effect برای دکمه شناور
+            const fabBtn = document.querySelector('.about-fab');
+            if (fabBtn) {
+                fabBtn.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.05)';
+                });
+                
+                fabBtn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

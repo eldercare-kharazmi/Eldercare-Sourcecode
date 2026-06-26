@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ورود / ثبت‌نام</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Vazirmatn', sans-serif; }
+        body { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .auth-card { background: white; width: 100%; max-width: 450px; border-radius: 20px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+        
+        .tabs { display: flex; background: #eee; }
+        .tab { flex: 1; padding: 15px; text-align: center; cursor: pointer; transition: 0.3s; font-weight: bold; color: #7f8c8d; }
+        .tab.active { background: white; color: #3498db; border-top: 3px solid #3498db; }
+        
+        .content { padding: 30px; }
+        h2 { text-align: center; color: #2c3e50; margin-bottom: 20px; }
+        .role-badge { display: block; text-align: center; background: #e3f2fd; color: #3498db; padding: 8px; border-radius: 10px; margin-bottom: 20px; font-weight: bold; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #555; font-size: 0.9rem; }
+        .form-control { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 10px; font-size: 1rem; transition: 0.3s; }
+        .form-control:focus { border-color: #3498db; outline: none; }
+        
+        .btn { width: 100%; padding: 14px; background: #3498db; color: white; border: none; border-radius: 10px; font-size: 1.1rem; cursor: pointer; font-weight: bold; margin-top: 10px; transition: 0.3s; }
+        .btn:hover { background: #2980b9; }
+        .btn:disabled { background: #bdc3c7; cursor: not-allowed; }
+        
+        .loading-msg { display: none; text-align: center; color: #3498db; font-size: 0.9rem; margin-top: 10px; font-weight: bold; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="auth-card">
+    <div class="tabs">
+        <div class="tab" onclick="switchTab('login')">ورود</div>
+        <div class="tab active" onclick="switchTab('register')">ثبت‌نام</div>
+    </div>
+    
+    <div class="content">
+        <span class="role-badge">
+            {% if role == 'elder' %}
+                <i class="fas fa-user"></i> پنل سالمند
+            {% else %}
+                <i class="fas fa-users"></i> پنل خانواده
+            {% endif %}
+        </span>
+
+        <!-- فرم ورود -->
+        <div id="loginForm" class="hidden">
+            <div class="form-group">
+                <label>نام کاربری</label>
+                <input type="text" id="loginUser" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>رمز عبور</label>
+                <input type="password" id="loginPass" class="form-control">
+            </div>
+            <button class="btn" id="loginBtn" onclick="doLogin()">ورود به سامانه</button>
+            <div id="loginLoading" class="loading-msg">⏳ در حال بررسی اطلاعات...</div>
+        </div>
+
+        <!-- فرم ثبت‌نام -->
+        <div id="registerForm">
+            <div class="form-group">
+                <label>نام و نام خانوادگی</label>
+                <input type="text" id="regName" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>نام کاربری (انگلیسی)</label>
+                <input type="text" id="regUser" class="form-control" style="direction: ltr; text-align: left;">
+            </div>
+            <div class="form-group">
+                <label>رمز عبور</label>
+                <input type="password" id="regPass" class="form-control">
+            </div>
+
+            {% if role == 'family' %}
+            <div style="background: #fff8e1; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                <div class="form-group">
+                    <label>ایمیل (برای دریافت هشدارها)</label>
+                    <input type="email" id="regEmail" class="form-control" style="direction: ltr; text-align: left;">
+                </div>
+                <div class="form-group">
+                    <label>کد سالمند</label>
+                    <input type="number" id="regElderCode" class="form-control">
+                </div>
+            </div>
+            {% endif %}
+
+            <button class="btn" id="regBtn" style="background: #27ae60;" onclick="doRegister()">ثبت‌نام</button>
+            <div id="regLoading" class="loading-msg">⏳ در حال ثبت اطلاعات، لطفاً صبور باشید...</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const role = "{{ role }}"; 
+
+    function switchTab(tab) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        if(tab === 'login') {
+            document.querySelector('.tab:nth-child(1)').classList.add('active');
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+        } else {
+            document.querySelector('.tab:nth-child(2)').classList.add('active');
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+        }
+    }
+
+    async function doLogin() {
+        const btn = document.getElementById('loginBtn');
+        const loader = document.getElementById('loginLoading');
+        const user = document.getElementById('loginUser').value;
+        const pass = document.getElementById('loginPass').value;
+        
+        if(!user || !pass) return alert('لطفا همه فیلدها را پر کنید');
+
+        // غیرفعال کردن دکمه و نمایش پیام
+        btn.disabled = true;
+        btn.innerText = 'لطفاً صبر کنید...';
+        loader.style.display = 'block';
+
+        try {
+            const res = await fetch('/auth/login', {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({username: user, password: pass})
+            });
+            const data = await res.json();
+            if(data.success) window.location.href = data.redirect_url;
+            else {
+                alert(data.message);
+                resetBtn(btn, loader, 'ورود به سامانه');
+            }
+        } catch (e) {
+            alert('خطا در ارتباط با سرور');
+            resetBtn(btn, loader, 'ورود به سامانه');
+        }
+    }
+
+    async function doRegister() {
+        const btn = document.getElementById('regBtn');
+        const loader = document.getElementById('regLoading');
+        const fullname = document.getElementById('regName').value;
+        const user = document.getElementById('regUser').value;
+        const pass = document.getElementById('regPass').value;
+        
+        if(!fullname || !user || !pass) return alert('لطفا تمام فیلدها را پر کنید');
+
+        // غیرفعال کردن دکمه و نمایش پیام
+        btn.disabled = true;
+        btn.innerText = 'در حال پردازش...';
+        loader.style.display = 'block';
+
+        const payload = { fullname, username: user, password: pass, user_type: role };
+        if(role === 'family') {
+            payload.email = document.getElementById('regEmail').value;
+            payload.elder_code = document.getElementById('regElderCode').value;
+        }
+
+        try {
+            const res = await fetch('/auth/register', {
+                method: 'POST', headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if(data.success) {
+                alert('ثبت‌نام با موفقیت انجام شد!');
+                window.location.href = data.redirect_url;
+            } else {
+                alert(data.message);
+                resetBtn(btn, loader, 'ثبت‌نام');
+            }
+        } catch (e) {
+            alert('خطا در ارتباط با سرور');
+            resetBtn(btn, loader, 'ثبت‌نام');
+        }
+    }
+
+    function resetBtn(btn, loader, text) {
+        btn.disabled = false;
+        btn.innerText = text;
+        loader.style.display = 'none';
+    }
+</script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+</body>
+</html>
