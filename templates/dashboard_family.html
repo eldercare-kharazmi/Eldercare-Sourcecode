@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داشبورد خانواده</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Vazirmatn', sans-serif; }
+        body { background: #f5f7fa; }
+        .header { background: #2ecc71; color: white; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .logout-btn { color: white; text-decoration: none; padding: 8px 18px; border: 2px solid #e74c3c; border-radius: 10px; transition: 0.3s; background: rgba(231, 76, 60, 0.1); font-weight: bold; }
+        .logout-btn:hover { background: #e74c3c; }
+        .main-container { padding: 30px; max-width: 1200px; margin: 0 auto; }
+        .medication-table { width: 100%; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 15px; text-align: right; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; font-weight: bold; color: #2c3e50; }
+        .status-pending { color: #f39c12; }
+        .status-taken { color: #2ecc71; }
+        .status-missed { color: #e74c3c; font-weight: bold; }
+        
+        /* استایل لیست هشدارها */
+        .alerts-section { margin-bottom: 30px; }
+        .alert-card {
+            background: #fff5f5; border-right: 5px solid #e74c3c;
+            padding: 15px; margin-bottom: 10px; border-radius: 5px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); animation: fadeIn 0.5s;
+        }
+        .alert-msg { color: #c0392b; font-weight: bold; }
+        .alert-time { color: #999; font-size: 0.85rem; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <div class="user-info">
+            <h2>سلام {{ fullname }}</h2>
+            <p>پیگیری وضعیت: <strong>{{ elder_name }}</strong></p>
+        </div>
+        <a href="{{ url_for('logout') }}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> خروج</a>
+    </div>
+    
+    <div class="main-container">
+        
+        <!-- بخش پیام‌های سیستم (جدید) -->
+        {% if alerts %}
+        <div class="alerts-section">
+            <h3 style="color: #c0392b; margin-bottom: 15px;"><i class="fas fa-bell"></i> پیام‌های اخیر</h3>
+            {% for alert in alerts %}
+            <div class="alert-card">
+                <span class="alert-msg"><i class="fas fa-exclamation-circle"></i> {{ alert.message }}</span>
+                <span class="alert-time">{{ alert.created_at }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <h2 style="margin-bottom: 20px; color: #2c3e50;">💊 داروهای امروز</h2>
+        <div class="medication-table">
+            <table>
+                <thead>
+                    <tr><th>نام دارو</th><th>ساعت</th><th>طرز استفاده</th><th>وضعیت</th></tr>
+                </thead>
+                <tbody>
+                    {% for med in medications %}
+                    <tr>
+                        <td><strong>{{ med.drug_name }}</strong></td>
+                        <td>{{ med.usage_time }}</td>
+                        <td>{{ med.usage_method or '-' }}</td>
+                        <td>
+                            {% if med.status == 'pending' %} <span class="status-pending">در انتظار</span>
+                            {% elif med.status == 'taken' %} <span class="status-taken">✅ مصرف شده</span>
+                            {% else %} <span class="status-missed">❌ مصرف نشده</span> {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="4" style="text-align:center; padding:30px;">دارویی برای نمایش وجود ندارد.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
