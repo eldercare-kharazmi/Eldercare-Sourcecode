@@ -1,0 +1,208 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Vazirmatn', sans-serif;
+}
+
+body {
+    background: #f5f7fa;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    background: #2c3e50;
+    color: white;
+    padding: 30px;
+    text-align: center;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.logo i {
+    font-size: 2.5rem;
+    color: #3498db;
+}
+
+.logo h1 {
+    font-size: 2rem;
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.main-content {
+    padding: 20px;
+}
+
+.welcome-section {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.welcome-section h2 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-size: 1.8rem;
+}
+
+.features {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+.feature {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    width: 250px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.feature i {
+    font-size: 2.5rem;
+    color: #3498db;
+    margin-bottom: 15px;
+}
+
+.feature h3 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.selection-section {
+    text-align: center;
+}
+
+.selection-section h2 {
+    color: #2c3e50;
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+}
+
+.user-type-cards {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+}
+
+.user-card {
+    background: white;
+    border-radius: 15px;
+    padding: 35px 30px;
+    width: 350px;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    transition: all 0.3s;
+}
+
+.user-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+}
+
+.user-card.elder {
+    border: 3px solid #3498db;
+}
+
+.user-card.family {
+    border: 3px solid #2ecc71;
+}
+
+.card-icon {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+}
+
+.user-card.elder .card-icon {
+    color: #3498db;
+}
+
+.user-card.family .card-icon {
+    color: #2ecc71;
+}
+
+.user-card h3 {
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+    color: #2c3e50;
+}
+
+.card-features {
+    list-style: none;
+    text-align: right;
+    margin-top: 20px;
+}
+
+.card-features li {
+    padding: 8px 0;
+}
+
+.info-box {
+    background: #e3f2fd;
+    padding: 20px;
+    border-radius: 10px;
+    border-right: 5px solid #2196f3;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.footer {
+    background: #2c3e50;
+    color: white;
+    text-align: center;
+    padding: 25px;
+    margin-top: 40px;
+    border-radius: 10px;
+}
+
+.footer-note {
+    opacity: 0.8;
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+    .user-type-cards {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .user-card {
+        width: 100%;
+        max-width: 400px;
+    }
+    
+    .features {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .feature {
+        width: 100%;
+        max-width: 350px;
+    }
+}
